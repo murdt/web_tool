@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  font-family: "Lato", sans-serif;
+}
+
+.sidenav {
+  height: 100%;
+  width: 100px;
+  position: fixed;
+  z-index: 1;
+  top: 50;
+  left: 0;
+  background-color: #353a40;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.sidenav a {
+  padding: 6px 8px 6px 16px;
+  text-decoration: none;
+  font-size: 15px;
+  color: #FFFFFF;
+  display: block;
+}
+
+.main {
+  margin-left: 160px; /* Same as the width of the sidenav */
+  font-size: 28px; /* Increased text to enable scrolling */
+  padding: 0px 10px;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+</style>
+</head>
+<body>
+
+<div class="sidenav">
+{% if session["is_admin"] == "yes" %}
+  <a href="/calculations">Hesap Araçları</a>
+  <a href="/datanalysis">Veri Analizi</a>
+  <a href="/useradministration">Kullanıcı Yönetimi</a>
+  <a href="/datamanagement">Veri Yönetimi</a>
+{% else  %}
+  <a href="#toolsSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Araçlar</a>
+<ul class="collapse list-unstyled" id="toolsSubmenu">
+    <li>
+         <a href="#orderSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Siparişler</a>
+        <ul class="collapse list-unstyled" id="orderSubmenu">
+            <li>
+                <a href="otomaticorder">Sipariş Düzenleme</a>
+            </li>
+            <li>
+                <a href="#">Sipariş Onay Aracı</a>
+            </li>
+        </ul>
+    </li>
+    <li>
+          <a href="#calculationSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Hesaplama Araçları</a>
+        <ul class="collapse list-unstyled" id="calculationSubmenu">
+            <li>
+                <a href="">Kablo Kesim Hesaplama</a>
+            </li>
+            <li>
+                <a href="#">Diğer</a>
+            </li>
+            <li>
+                <a href="#">Yıllık Ciro Hesaplama</a>
+            </li>
+        </ul>
+    </li>
+    <li>
+         <a href="#maintenanceSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Bakım</a>
+        <ul class="collapse list-unstyled" id="maintenanceSubmenu">
+            <li>
+                <a href="">Bakım Raporu Taslağı Değiştir</a>
+            </li>
+            <li>
+                <a href="">Bakım Raporu Yazdır</a>
+            </li>
+        </ul>
+    </li>
+</ul>
+{% endif %}
+
+</div>  
+</body>
+</html> 

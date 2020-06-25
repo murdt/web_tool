@@ -1,0 +1,64 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+
+
+{% block head %}
+<style>
+    .split {
+  height: 100%;
+  width: 50%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+fieldset = {
+    border: 1px #0687c1;
+    padding: 8px;    
+    border-radius: 4px;
+    margin: 8px;
+}
+.left {
+  left: 0;
+  
+}
+.right {
+  right: 0;
+  
+}
+
+</style>
+{% endblock head %}
+
+{% block body %}
+<div class="split left">
+    <br><br>
+    <h4 style="margin-left: 20;">Sipariş</h4>
+    <br>
+    {% from "includes/formhelpers.html" import render_field %}
+    <form method = "post", style = "margin-left: 20;">
+        {{ render_field(form.sp1,class = "form-control") }}
+        {{ render_field(form.sp2,class = "form-control") }}
+    </form>  
+  </div>
+</div>
+
+<div class="split right">
+    <br><br>
+    <h4 style="margin-left: 20;">Hammadde</h4>
+    <br>
+    {% from "includes/formhelpers.html" import render_field %}
+    <form method = "post", style = "margin-left: 20;">
+        {{ render_field(form.hm1,class = "form-control") }}
+        {{ render_field(form.hm2,class = "form-control") }}
+    </form>
+  </div>
+</div>
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<fieldset>
+    <h5 style="text-align:center;">İşlemler</h5>
+    
+</fieldset>
+{% endblock body %}

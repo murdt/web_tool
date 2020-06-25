@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% include "includes/navbar.html" %}
+{% block body %}
+<br><br><br>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Adı</th>
+      <th scope="col">Soyadı</th>
+      <th scope="col">Kullanıcı Adı</th>
+      <th scope="col">Şifresi</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in value %}
+    <th scope="row">{{row.name}}</th>
+      <td>{{row.last_name}}</td>
+      <td>{{row.username}}</td>
+      <td>{{row.password}}</td>
+      <td><a href="/updateuser/{{row.id}}" class="btn btn-danger">Güncelle</td>
+      <td><a href="/deleteuser/{{row.username}}" class="btn btn-danger">Sil</td>
+    </tr>   
+    {% endfor %}
+  </tbody>
+</table>
+<td><a href="/adduser" class="btn btn-danger">Kullanıcı Ekle</td>
+{% endblock body %}

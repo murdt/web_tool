@@ -1,0 +1,14 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+
+{% block body %}
+{% from "includes/formhelpers.html" import render_field %}
+<form method = "post", style = "margin-left: 20;">
+    <br><br><br>
+    {{ render_field(form.name)}}
+    {{ render_field(form.last_name)}}
+    {{ render_field(form.username) }}
+    {{ render_field(form.password) }}
+    <button type="sumbit" class="btn btn-primary">Güncelle</button>
+</form>
+{% endblock body %}
