@@ -6,8 +6,9 @@ from functools import wraps
 import pyodbc
 from flask_table import Table,Col,LinkCol
 from datetime import datetime
-import requests
-import json
+from openpyxl import *
+from openpyxl.styles import Font
+from win32com.client import Dispatch
 
 
 app = Flask(__name__)
@@ -30,7 +31,10 @@ class UpdateMaintenceForm(Form):
     last_date = StringField("Arızanın Meydana Giderildiği Tarih:")
     totalhour = StringField("Toplam Duruş:")
     section = StringField("Arızanın Meydana Geldiği Bölüm:")
-    person = StringField("Arızayı Gideren Kişi:")
+    person = StringField("Arızayı Gideren Kişi 1:")
+    person2 = StringField("Arızayı Gideren Kişi 2:")
+    person3 = StringField("Arızayı Gideren Kişi 3:")
+    person4 = StringField("Arızayı Gideren Kişi 4:")
     description = StringField("Arızanın Tanımı:")
     status = StringField("Durum:")
     operation = StringField("Yapılan İşlem:")
@@ -224,12 +228,13 @@ def maintenanceadd():
         last_date  = datetime.strptime(last_datestring,'%d-%m-%Y')
         totalhour = form.totalhour.data
         section = form.section.data
+        person = form.person.data
         description = form.description.data
         status = form.status.data
         operation = form.operation.data
         cursor = conn.cursor()
-        query = "INSERT INTO maintenance (date,last_date,totalhour,section,description,status,operation) VALUES (?,?,?,?,?,?,?,?)"
-        cursor.execute(query,[date,last_date,totalhour,section,description,status,operation])
+        query = "INSERT INTO maintenance (date,last_date,totalhour,section,person,description,status,operation) VALUES (?,?,?,?,?,?,?,?)"
+        cursor.execute(query,[date,last_date,totalhour,section,person,description,status,operation])
         cursor.commit()
         return redirect(url_for("maintenancemain"))
 
@@ -257,6 +262,9 @@ def updatemaintenanceform(id):
         form.totalhour.data = info[3]
         form.section.data = info[4]
         form.person.data = info[5]
+        form.person2.data = info[9]
+        form.person3.data = info[10]
+        form.person4.data = info[11]
         form.description.data = info[6]
         form.status.data = info[7]
         form.operation.data = info[8]
@@ -266,31 +274,102 @@ def updatemaintenanceform(id):
         last_date = form.last_date.data
         totalhour = form.totalhour.data
         section = form.section.data
-        person = form.person.data
+        person1 = form.person.data
+        person2 = form.person2.data
+        person3 = form.person3.data
+        person4 = form.person4.data
         description = form.description.data
         status = form.status.data
         operation = form.operation.data
         cursor = conn.cursor()
-        query = "UPDATE maintenance SET date=?,last_date=?,totalhour=?,section=?,person=?,description=?,status=?,operation=? WHERE id=?"
-        cursor.execute(query,[date,last_date,totalhour,section,person,description,status,operation,id])
-        return redirect(url_for("maintenancemain"))
-
-@app.route("/addmaintainer/<string:id>", methods = ["GET", "POST"])
-@login_required
-def addmaintainer(id):
-    form = MaintainerForm(request.form)
-    if request.method == "GET":
-        cursor = conn.cursor()
-        cursor.execute("SELECT id FROM maintenance")
-        data = cursor.fetchall() 
-        return render_template("maintenance/addmaintainer.html",value=data, form=form)
-    else:
-        cursor = conn.cursor()
-        name = form.name.data
-        query = "INSERT INTO maintainers (name,maintenanceid) VALUES (?,?)"
-        cursor.execute(query,[name,id])
+        query = "UPDATE maintenance SET date=?,last_date=?,totalhour=?,section=?,person=?,description=?,status=?,operation=?,person_2=?,person_3=?,person_4=? WHERE id=?"
+        cursor.execute(query,[date,last_date,totalhour,section,person1,description,status,operation,person2,person3,person4,id])
         cursor.commit()
         return redirect(url_for("maintenancemain"))
+
+@app.route("/excelmaintenance/<string:id>")
+@login_required
+def excelmaintenance(id):
+
+    row = 1
+    column = 2
+    workbook = Workbook()
+    sheet = workbook.active
+    bold_font = Font(bold=True, size=20)
+    value_font = Font(size=15)
+
+
+    sheet.cell(row=row, column=column).value = "Sıra No"
+    sheet.cell(row=row, column=column + 1).value = "Arızanın Meydana Geldiği Tarih"
+    sheet.cell(row=row, column=column + 2).value = "Arızanın Giderildiği Tarih"
+    sheet.cell(row=row, column=column + 3).value = "Toplam Duruş (saat)"
+    sheet.cell(row=row, column=column + 4).value = "Arızanın Meydana Geldiği Bölüm"
+    sheet.cell(row=row, column=column + 5).value = "Arızayı Gideren Kişi 1"
+    sheet.cell(row=row, column=column + 6).value = "Arızayı Gideren Kişi 2"
+    sheet.cell(row=row, column=column + 7).value = "Arızayı Gideren Kişi 3"
+    sheet.cell(row=row, column=column + 8).value = "Arızayı Gideren Kişi 4"
+    sheet.cell(row=row, column=column + 9).value = "Arıza Tanımı"
+    sheet.cell(row=row, column=column + 10).value = "Durum"
+    sheet.cell(row=row, column=column + 11).value = "Yapılan İşlem"
+
+    sheet.cell(row=row, column=column).font = bold_font
+    sheet.cell(row=row, column=column + 1).font = bold_font
+    sheet.cell(row=row, column=column + 2).font = bold_font
+    sheet.cell(row=row, column=column + 3).font = bold_font
+    sheet.cell(row=row, column=column + 4).font = bold_font
+    sheet.cell(row=row, column=column + 5).font = bold_font
+    sheet.cell(row=row, column=column + 6).font = bold_font
+    sheet.cell(row=row, column=column + 7).font = bold_font
+    sheet.cell(row=row, column=column + 8).font = bold_font
+    sheet.cell(row=row, column=column + 9).font = bold_font
+    sheet.cell(row=row, column=column + 10).font = bold_font
+    sheet.cell(row=row, column=column + 11).font = bold_font
+    
+    cursor = conn.cursor()
+    query = "SELECT * FROM maintenance WHERE id=?"
+    cursor.execute(query,[id])
+
+    data = cursor.fetchone()
+
+    sheet.cell(row=row + 1, column=column).value = data[0]
+    sheet.cell(row=row + 1, column=column + 1).value = str(data[1])
+    sheet.cell(row=row + 1, column=column + 2).value = str(data[2])
+    sheet.cell(row=row + 1, column=column + 3).value = data[3]
+    sheet.cell(row=row + 1, column=column + 4).value = data[4]
+    sheet.cell(row=row + 1, column=column + 5).value = data[5]
+    sheet.cell(row=row + 1, column=column + 6).value = data[9]
+    sheet.cell(row=row + 1, column=column + 7).value = data[10]
+    sheet.cell(row=row + 1, column=column + 8).value = data[11]
+    sheet.cell(row=row + 1, column=column + 9).value = data[6]
+    sheet.cell(row=row + 1, column=column + 10).value = data[7]
+    sheet.cell(row=row + 1, column=column + 11).value = data[8]
+
+    sheet.cell(row=row + 1, column=column).font = value_font
+    sheet.cell(row=row + 1, column=column + 1).font = value_font
+    sheet.cell(row=row + 1, column=column + 2).font = value_font
+    sheet.cell(row=row + 1, column=column + 3).font = value_font
+    sheet.cell(row=row + 1, column=column + 4).font = value_font
+    sheet.cell(row=row + 1, column=column + 5).font = value_font
+    sheet.cell(row=row + 1, column=column + 6).font = value_font
+    sheet.cell(row=row + 1, column=column + 7).font = value_font
+    sheet.cell(row=row + 1, column=column + 8).font = value_font
+    sheet.cell(row=row + 1, column=column + 9).font = value_font
+    sheet.cell(row=row + 1, column=column + 10).font = value_font
+    sheet.cell(row=row + 1, column=column + 11).font = value_font
+
+    filename = "Bakım Formu Numara " + str(data[0]) + ".xlsx"
+
+    workbook.save(filename=filename)
+
+    workbook = load_workbook(filename = filename)
+
+    xl = Dispatch("Excel.Application")
+    xl.Visible = True
+    wb = xl.Workbooks.Open(r'C:\Users\owner\Desktop\web_tool\Bakım Formu Numara ' + str(data[0]) + '.xlsx')
+    return redirect(url_for("maintenancemain"))
+        
+    
+
 
 
 if __name__ == "__main__":

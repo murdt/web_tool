@@ -10,10 +10,13 @@
       <th scope="col">Arızanın Giderildiği Tarih</th>
       <th scope="col">Toplam Duruş(saat)</th>
       <th scope="col">Arızanın Meydana Gelidği Bölüm</th>
-      <th scope="col">Arızayı Gideren Kişi</th>
+      <th scope="col">Arızayı Gideren Kişi 1</th>
+      <th scope="col">Arızayı Gideren Kişi 2</th>
+      <th scope="col">Arızayı Gideren Kişi 3</th>
+      <th scope="col">Arızayı Gideren Kişi 4</th>
       <th scope="col">Arıza Tanımı</th>
       <th scope="col">Durum</th>
-      <th scope="col">Yapılan İşlemm</th>
+      <th scope="col">Yapılan İşlem</th>
     </tr>
   </thead>
   <tbody>
@@ -23,14 +26,16 @@
       <td>{{row.last_date}}</td>
       <td>{{row.totalhour}}</td>
       <td>{{row.section}}</td>
-      <td>{{bruh}}</td>
+      <td>{{row.person}}</td>
+      <td>{{row.person_2}}</td>
+      <td>{{row.person_3}}</td>
+      <td>{{row.person_4}}</td>
       <td>{{row.description}}</td>
       <td>{{row.status}}</td>
       <td>{{row.operation}}</td>
       <td><a href="/updatemaintenanceform/{{row.id}}" class="btn btn-danger">Düzenle</td>
       <td><a href="/deletemaintenanceform/{{row.id}}" class="btn btn-danger">Sil</td>
-      <td><a href="/pdfmaintenance/{{row.id}}" class="btn btn-danger">PDF'ini Al</td>
-      <td><a href="/addmaintainer/{{row.id}}" class="btn btn-danger">Bakımcı Ata</td>
+      <td><a href="/excelmaintenance/{{row.id}}" class="btn btn-danger">Excel</td>
     </tr>   
     {% endfor %}
   </tbody>
