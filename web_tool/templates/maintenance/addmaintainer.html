@@ -1,0 +1,33 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+
+{% block body %}
+{% from "includes/formhelpers.html" import render_field %}
+
+<form method = "post"> 
+    <br><br><br>
+    <div class="card card-danger">
+        <div class="card-header">
+            <h3 class="card-title">Bakım Formuna Bakımcı Ata</h3>
+            <div class="card-body">
+                <div class="row">  
+                    <label for="maintenanceforms">Bir Bakım Formu Seçiniz:</label>
+                    <select name="maintenanceforms" id="maintenanceforms">
+                    {% for row  in  value %}
+                        <option id="{{row.id}}">{{row.id}}</option>
+                    {% endfor %}                          
+                    </select>
+                    <br><br>
+                    <div class="col-3">
+                        <input type="text" data-toggle="tooltip" title="Bakımcı Bilgileri" class="form-control" placeholder="Bakımcı Bilgileri" name="name">                                   
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <button type="sumbit" class="btn btn-primary">Bakımcı Ata</button>
+</form>
+
+
+{% endblock body %}

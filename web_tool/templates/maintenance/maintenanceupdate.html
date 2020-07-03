@@ -1,0 +1,34 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+
+{% block body %}
+{% from "includes/formhelpers.html" import render_field %}
+<form method = "post", style = "margin-left: 20;">
+    <form method = "post"> 
+    <br><br><br>
+    <div class="card card-danger">
+        <div class="card-header">
+            <h3 class="card-title">Bakım Formu Bilgileri</h3>
+            <div class="card-body">                    
+                    {{ render_field(form.date)}}
+                    <br>
+                    {{ render_field(form.last_date)}}
+                    <br>
+                    {{ render_field(form.totalhour) }}
+                    <br>
+                    {{ render_field(form.section) }}
+                    <br>
+                    {{ render_field(form.person)}}
+                    <br>
+                    {{ render_field(form.description)}}
+                    <br>
+                    {{ render_field(form.status) }}
+                    <br>
+                    {{ render_field(form.operation) }}
+            </div>
+        </div>
+    </div>
+    <br>
+    <button type="sumbit" class="btn btn-primary">Güncelle</button>
+</form>
+{% endblock body %}

@@ -1,0 +1,41 @@
+{% include "includes/navbar.html" %}
+{% extends "layout.html" %}
+
+{% block body %}
+{% from "includes/formhelpers.html" import render_field %}
+<form method = "post"> 
+    <br><br><br>
+    <div class="card card-danger">
+        <div class="card-header">
+            <h3 class="card-title">Bakım Formu Bilgileri</h3>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-2">
+                        <input type="text" data-toggle="tooltip" title="Arızanın Meydana Geldiği Tarih" class="form-control" placeholder="Arızanın Meydana Gelidiği Tarih" name="date">                                   
+                    </div>
+                    <div class="col-2">
+                        <input type="text" data-toggle="tooltip" title="Arızanın Giderildiği Tarih" class="form-control" placeholder="Arızanın Giderildiği Tarih" name="last_date">                                   
+                    </div>
+                    <div class="col-1">
+                        <input type="text" data-toggle="tooltip" title="Toplam Duruş" class="form-control" placeholder="Toplam Duruş" name="totalhour">                                   
+                    </div>
+                    <div class="col-2">
+                        <input type="text" data-toggle="tooltip" title="Arızanın Meydana Geldiği Bölüm" class="form-control" placeholder="Arızanın Meydana Gelidiği Bölüm" name="section">                                   
+                    </div>
+                    <div class="col-2">
+                        <input type="text" data-toggle="tooltip" title="Arızanın Tanımı" class="form-control" placeholder="Arızanın Tanımı" name="description">                            
+                    </div>
+                    <div class="col-1">
+                        <input type="text" data-toggle="tooltip" title="Durum" class="form-control" placeholder="Durum" name="status">                                   
+                    </div>
+                    <div class="col-2">
+                        <input type="text" data-toggle="tooltip" title="Yapılan İşlem" class="form-control" placeholder="Yapılan İşlem" name="operation">                                   
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <button type="sumbit" class="btn btn-primary">Bakım Formu Ekle</button>
+</form>
+{% endblock body %}

@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% include "includes/navbar.html" %}
+{% block body %}
+<br><br><br>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">Arızanın Meydana Geldiği Tarih</th>
+      <th scope="col">Arızanın Giderildiği Tarih</th>
+      <th scope="col">Toplam Duruş(saat)</th>
+      <th scope="col">Arızanın Meydana Gelidği Bölüm</th>
+      <th scope="col">Arızayı Gideren Kişi</th>
+      <th scope="col">Arıza Tanımı</th>
+      <th scope="col">Durum</th>
+      <th scope="col">Yapılan İşlem</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in value %}
+    <th scope="row">{{row.id}}</th>
+      <td>{{row.date}}</td>
+      <td>{{row.last_date}}</td>
+      <td>{{row.totalhour}}</td>
+      <td>{{row.section}}</td>
+      <td>{{bruh}}</td>
+      <td>{{row.description}}</td>
+      <td>{{row.status}}</td>
+      <td>{{row.operation}}</td>
+      <td><a href="/updatemaintenanceform/{{row.id}}" class="btn btn-danger">Düzenle</td>
+      <td><a href="/deletemaintenanceform/{{row.id}}" class="btn btn-danger">Sil</td>
+      <td><a href="/pdfmaintenance/{{row.id}}" class="btn btn-danger">PDF'ini Al</td>
+      <td><a href="/addmaintainer/{{row.id}}" class="btn btn-danger">Bakımcı Ata</td>
+    </tr>   
+    {% endfor %}
+  </tbody>
+</table>
+<td><a href="/addmaintenanceform" class="btn btn-danger">Yeni Bir Bakım Formu Ekle</td>
+{% endblock body %}

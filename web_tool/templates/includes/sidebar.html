@@ -9,7 +9,7 @@ body {
 
 .sidenav {
   height: 100%;
-  width: 100px;
+  width: 150px;
   position: fixed;
   z-index: 1;
   top: 50;
@@ -43,10 +43,52 @@ body {
 
 <div class="sidenav">
 {% if session["is_admin"] == "yes" %}
-  <a href="/calculations">Hesap Araçları</a>
-  <a href="/datanalysis">Veri Analizi</a>
-  <a href="/useradministration">Kullanıcı Yönetimi</a>
-  <a href="/datamanagement">Veri Yönetimi</a>
+  <a href="#toolsSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Araçlar</a>
+<ul class="collapse list-unstyled" id="toolsSubmenu">
+    <li>
+      <a href="useradministration">Kullanıcı Yönetimi</a>
+         <a href="#orderSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Siparişler</a>
+        <ul class="collapse list-unstyled" id="orderSubmenu">
+            <li>
+                <a href="otomaticorder">Sipariş Düzenleme</a>
+            </li>
+            <li>
+                <a href="#">Sipariş Onay Aracı</a>
+            </li>
+        </ul>
+    </li>
+    <li>
+          <a href="#calculationSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Hesaplama Araçları</a>
+        <ul class="collapse list-unstyled" id="calculationSubmenu">
+            <li>
+                <a href="">Kablo Kesim Hesaplama</a>
+            </li>
+            <li>
+                <a href="#">Diğer</a>
+            </li>
+            <li>
+                <a href="#">Yıllık Ciro Hesaplama</a>
+            </li>
+        </ul>
+    </li>
+    <li>
+         <a href="#maintenanceSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Bakım</a>
+        <ul class="collapse list-unstyled" id="maintenanceSubmenu">
+            <li>
+                <a href="">Bakım Raporu Taslağı Değiştir</a>
+            </li>
+            <li>
+                <a href="">Bakım Raporu Yazdır</a>
+            </li>
+            <li>
+                <a href="maintenance">Bakım Raporlarını Görüntüle</a>
+            </li>
+            <li>
+                <a href="addmaintainer">Bakım Raporlarına Bakımcı Ata</a>
+            </li>
+        </ul>
+    </li>
+</ul>
 {% else  %}
   <a href="#toolsSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Araçlar</a>
 <ul class="collapse list-unstyled" id="toolsSubmenu">
@@ -83,6 +125,9 @@ body {
             </li>
             <li>
                 <a href="">Bakım Raporu Yazdır</a>
+            </li>
+            <li>
+                <a href="maintenance">Bakım Raporlarını Görüntüle</a>
             </li>
         </ul>
     </li>
