@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% include "includes/navbar.html" %}
+{% block body %}
+<br><br><br>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Departman No</th>
+      <th scope="col">Departman Adı</th>
+      <th scope="col">Departmanın Oluşturulduğu Tarih</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for row in value %}
+    <th scope="row">{{row.id}}</th>
+      <td>{{row.departmentname}}</td>
+      <td>{{row.creationdate}}</td>
+      <td><a href="/updatedepartment/{{row.id}}" class="btn btn-danger">Departman Bilgilerini Değiştir</td>
+      <td><a href="/listpersonel" class="btn btn-danger">Personelleri Listele</td>
+    </tr>   
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock body %}

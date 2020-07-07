@@ -19,12 +19,18 @@
                     <div class="col-1">
                         <input type="text" data-toggle="tooltip" title="Toplam Duruş" class="form-control" placeholder="Toplam Duruş" name="totalhour">                                   
                     </div>
-                    <div class="col-2">
-                        <input type="text" data-toggle="tooltip" title="Arızanın Meydana Geldiği Bölüm" class="form-control" placeholder="Arızanın Meydana Geldiği Bölüm" name="section">                                   
-                    </div>
-                    <div class="col-3">
-                        <input type="text" data-toggle="tooltip" title="Arızayı Gideren Kişi" class="form-control" placeholder="Arızayı Gideren Kişi" name="person">                                   
-                    </div>
+                    &emsp;
+                    <select name="department" id="department">
+                    {% for row  in  value2 %}
+                        <option id="section" name="section">{{row.departmentname}}</option>
+                    {% endfor %}                          
+                    </select>
+                    &emsp;&emsp;&emsp;               
+                    <select name="name" id="name">
+                    {% for row  in  value %}
+                        <option id="name" name = "name">{{row.name}}  {{row.last_name}}</option>
+                    {% endfor %}                          
+                    </select>
                     <div class="col-2">
                         <input type="text" data-toggle="tooltip" title="Durum" class="form-control" placeholder="Durum" name="status">                                   
                     </div>

@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% include "includes/navbar.html" %}
+
+{% block body %}
+{% from "includes/formhelpers.html" import render_field %}
+
+<form method = "post"> 
+    <br><br><br>
+    <div class="card card-danger">
+        <div class="card-header">
+            <h3 class="card-title">Departmana Personel Ata</h3>
+            <div class="card-body">
+                <div class="row">  
+                    <label for="department">Bir Departman Seçiniz:</label>
+                    &emsp;
+                    <select name="department" id="department">
+                    {% for row  in  value %}
+                        <option id="department">{{row.departmentname}}</option>
+                    {% endfor %}                          
+                    </select>
+                    &emsp;&emsp;
+                    <label for="user">Bir Kullanıcı Seçiniz:</label>
+                    &emsp;
+                    <select name="user" id="user">
+                    {% for row  in  value2 %}
+                        <option id="user">{{row.name}} {{row.last_name}}</option>
+                    {% endfor %}                          
+                    </select>
+                    <br><br>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <button type="sumbit" class="btn btn-primary">Personel Ata</button>
+</form>
+
+
+{% endblock body %}

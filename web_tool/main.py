@@ -1,9 +1,10 @@
-from flask import Flask,render_template,flash,redirect,url_for,session,logging,request,jsonify
-from wtforms import Form,StringField,PasswordField,TextAreaField,validators
+from flask import Flask,render_template,flash,redirect,url_for,session,logging,request,jsonify,send_from_directory
+from wtforms import Form,StringField,PasswordField,TextAreaField,validators,DateField
 from flask_sqlalchemy import SQLAlchemy
 import urllib
 from functools import wraps
 import pyodbc
+import os
 from flask_table import Table,Col,LinkCol
 from datetime import datetime
 from openpyxl import *
@@ -15,8 +16,9 @@ app = Flask(__name__)
 
 app.secret_key = "web_tool"
 
-class MaintainerForm(Form):
-    name = StringField("İsim")
+UPLOAD_FOLDER = "/server_files"
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 class UpdateForm(Form):
@@ -60,6 +62,12 @@ class OrderForm(Form):
 class LoginForm(Form):
     username = StringField("Username")
     password = PasswordField("Password")
+
+class PersonelForm(Form):
+    name = StringField("İsim")
+    date = StringField("Tarih")
+
+
 
 conn = pyodbc.connect("DRIVER={SQL Server};SERVER=VEEAMBACKUP\VEEAMSQL2016;PORT=1433;DATABASE=web_server;UID=sa;PWD=yasinc;")
 conn2 = pyodbc.connect("DRIVER={SQL Server};SERVER=VEEAMBACKUP\VEEAMSQL2016;PORT=1433;DATABASE=web_server;UID=sa;PWD=yasinc;")
@@ -206,35 +214,36 @@ def order():
 @app.route("/maintenance")
 @login_required
 def maintenancemain():
-        total = "" 
         cursor.execute("SELECT * FROM maintenance")
         data = cursor.fetchall()
-        cursor2.execute("SELECT name,maintenanceid FROM maintainers")
-        data2 = cursor2.fetchall()
-        while data2[1] == data[0]:
-            total = total + " " + data2[0]
-        return render_template("maintenance/maintenancemain.html",value=data, value2=data2, bruh=total)
+        return render_template("maintenance/maintenancemain.html",value=data)
 
 @app.route("/addmaintenanceform", methods = ["GET", "POST"])
 @login_required
 def maintenanceadd():
     form = UpdateMaintenceForm(request.form)
     if request.method == "GET":
-        return render_template("maintenance/addmaintenance.html",form = form)  
+        cursor = conn.cursor()
+        cursor2 = conn.cursor()
+        cursor.execute("SELECT name,last_name FROM users")
+        data = cursor.fetchall()
+        cursor2.execute("SELECT departmentname FROM department")
+        department = cursor2.fetchall()
+        return render_template("maintenance/addmaintenance.html",form = form, value=data, value2=department)  
     else:
         datestring = str(form.date.data)
         last_datestring = str(form.last_date.data)
         date  = datetime.strptime(datestring,'%d-%m-%Y')
         last_date  = datetime.strptime(last_datestring,'%d-%m-%Y')
         totalhour = form.totalhour.data
-        section = form.section.data
-        person = form.person.data
         description = form.description.data
         status = form.status.data
         operation = form.operation.data
+        section = request.form['department']
+        name = request.form['name']
         cursor = conn.cursor()
         query = "INSERT INTO maintenance (date,last_date,totalhour,section,person,description,status,operation) VALUES (?,?,?,?,?,?,?,?)"
-        cursor.execute(query,[date,last_date,totalhour,section,person,description,status,operation])
+        cursor.execute(query,[date,last_date,totalhour,section,name,description,status,operation])
         cursor.commit()
         return redirect(url_for("maintenancemain"))
 
@@ -359,18 +368,77 @@ def excelmaintenance(id):
 
     filename = "Bakım Formu Numara " + str(data[0]) + ".xlsx"
 
-    workbook.save(filename=filename)
 
     workbook = load_workbook(filename = filename)
-
-    xl = Dispatch("Excel.Application")
-    xl.Visible = True
-    wb = xl.Workbooks.Open(r'C:\Users\owner\Desktop\web_tool\Bakım Formu Numara ' + str(data[0]) + '.xlsx')
+    file = request.files['file']
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    
     return redirect(url_for("maintenancemain"))
         
-    
+@app.route("/departmentadministration")
+@login_required
+def departmentadministration():
+    if session['is_admin'] == "yes":
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM department")
+        data = cursor.fetchall()
+        return render_template("department/departmentadministration.html", value = data)
+    else:
+        pass
+
+@app.route("/updatedepartment/<string:id>", methods = ["GET","POST"])
+@login_required
+def updatedepartment(id):
+    if session["is_admin"] == "yes":
+        form = PersonelForm(request.form)
+        cursor = conn.cursor()
+        if request.method == "GET":
+            query = "SELECT * FROM department WHERE id=?"
+            cursor.execute(query,[id])
+            data = cursor.fetchone()
+            form.date.data = data[2]
+            form.name.data = data[1]
+            return render_template("department/updatedepartment.html", value = data, form = form)
+        else:
+            query = "UPDATE department SET departmentname=?, creationdate=? WHERE id=?"
+            name = form.name.data
+            date = datetime.strptime(form.date.data,"%Y-%m-%d")
+            cursor.execute(query,[name,date,id])
+            cursor.commit()
+            return redirect(url_for("departmentadministration"))              
+    else:
+        pass
+
+@app.route("/addpersontodepartment", methods = ["GET","POST"])
+@login_required
+def addpersontodepartment(id):
+    if session["is_admin"] == "yes":
+        cursor = conn.cursor()
+        cursor2 = conn.cursor()
+        if request.method == "GET":
+            cursor.execute("SELECT departmentname FROM department")
+            departments = cursor.fetchall()
+            cursor2.execute("SELECT id,name,last_name FROM users")
+            users = cursor2.fetchall()
+            return render_template("department/addpersontodepartment.html", value = departments, value2 = users)
+        else:
+            query = "UPDATE users SET department=? WHERE id=?"
+            department = request.form['department']
+            cursor = conn.cursor()
+            cursor.execute(query,[department,id])
+            cursor.commit()
+            return redirect(url_for("departmentadministration"))
+            
+
+
+
+
+
+
+
+
 
 
 
 if __name__ == "__main__":
-    app.run(port=7000, host=("172.26.79.10"),debug=True)
+    app.run(port=7000, host=("192.168.10.44"),debug=True)
